@@ -83,6 +83,7 @@ see "Evaluate..." if your IDE is set up correctly.)
 -}
 
 -- >>> 3 * (4 + 5)
+-- 27
 
 {-
 This sort of reasoning isn't so surprising so far. We can do the same thing in
@@ -106,6 +107,7 @@ We can ask VSCode to calculate with these names, just as we did above.
 -}
 
 -- >>> ex
+-- 27
 
 {-
 Haskell definitions do not need to be in order. In a definition for one name, we
@@ -119,6 +121,7 @@ ez :: Integer
 ez = ex + 200
 
 -- >>> ey
+-- 254
 
 {-
 Whenever we give a name to an expression, it is a good idea to also write down
@@ -148,12 +151,14 @@ Compare the value of a extra-large `Integer`
 -}
 
 -- >>> bigInteger
+-- 12345678901234567890
 
 {-
 with an `Int`
 -}
 
 -- >>> bigInt
+-- -6101065172474983726
 
 {-
 Above, we declared the type of an expression separately from giving it a
@@ -162,6 +167,7 @@ still annotate it with its type using `::`.
 -}
 
 -- >>> 31 * (42 + 56) :: Integer
+-- 3038
 
 {-
 More generally, the type annotation can be attached to any subexpression, not
@@ -169,6 +175,7 @@ just at the top level.
 -}
 
 -- >>> (31 :: Integer) * (42 + 56)
+-- 3038
 
 {-
 It is good style to annotate the type of *every* top-level declaration in a Haskell
@@ -199,14 +206,19 @@ Furthermore, you'll also find characters, strings and boolean values.
 -}
 
 -- >>> 'a' :: Char                 -- characters
+-- 'a'
 
 -- >>> "abcd" :: String            -- strings
+-- "abcd"
 
 -- >>> "cis" ++ "5520"             -- string concatenation
+-- "cis5520"
 
 -- >>> True :: Bool                -- boolean values
+-- True
 
 -- >>> 1 <= 3 || False && 3 > 2    -- boolean operators, comparisons
+-- True
 
 {-
 What is a little different about Haskell is that everything is an expression,
@@ -215,6 +227,7 @@ expressions.
 -}
 
 -- >>> (if ex > 28 then 1 else 0) + 2 :: Int
+-- 2
 
 {-
 Now the last basic type, shown below, is subtle. It is a special constant,
@@ -227,6 +240,7 @@ type `()`, then we know that its value (if it has one) must be equal to `()`.
 -}
 
 -- >>> () :: ()            -- 'unit' (both value and type have the same syntax)
+-- ()
 
 {-
 What is the point of a trivial type? In Haskell, every function is a mathematical function,
@@ -262,12 +276,14 @@ We call functions by providing them with arguments.
 -}
 
 -- >>> pat 31 42 56
+-- 3038
 
 {-
 No parentheses are necessary, unless the argument itself is a compound expression.
 -}
 
 -- >>> pat (30 + 1) 42 56
+-- 3038
 
 {-
 The important question is not "What does this function do?"
@@ -368,6 +384,7 @@ on either side of the operator.
 x >+ y = x + y + 1
 
 -- >>> 2 >+ 3
+-- 6
 
 {-
 Laziness is a virtue
@@ -392,6 +409,7 @@ error will trigger.
 -}
 
 -- >>> 1 + 2 + 3 + error "Here!"
+-- Here!
 
 {-
 However, we won't trigger an error that is in dead code, such as in
@@ -414,6 +432,7 @@ it does not short circuit and does trigger the error.
 -}
 
 -- >>> False || error "Here!"
+-- Here!
 
 {-
 In most languages, `if` and `||` are defined via special constructs because they
@@ -431,6 +450,7 @@ Through laziness, this definition short circuits, just like the Prelude version 
 -}
 
 -- >>> or True (error "Unreachable")
+-- True
 
 {-
 More generally, because Haskell is lazy, the language enables more abstraction.
@@ -455,6 +475,7 @@ Thus:
 -}
 
 -- >>> const (error "Here!") 4
+-- 4
 
 {-
 Laziness is unique to Haskell, and we'll see more examples of it throughout the semester.
@@ -783,16 +804,19 @@ pat4 :: ((Int, Int), Int) -> Int
 pat4 ((a, b), c) = a * (b + c)
 
 -- >>> pat4 tup4
+-- 5
 
 pat5 :: (Int, (Int, Int)) -> Int
 pat5 (a, (b, c)) = a * (b + c)
 
 -- >>> pat5 tup5
+-- 5
 
 pat6 :: (Int, Int, Int) -> Int
 pat6 (a, b, c) = a * (b + c)
 
 -- >>> pat6 tup6
+-- 5
 
 {-
 We can stick anything in tuples, even IO actions.
@@ -897,7 +921,8 @@ error if it is ever evaluated.
 -}
 
 jn' :: Maybe (Maybe a) -> Maybe a
-jn' = undefined
+jn' (Just x) = x
+jn' Nothing = Nothing
 
 {-
 Lists
@@ -916,7 +941,7 @@ l1 :: [Double]
 l1 = [1.0, 2.0, 3.0, 4.0]
 
 l2 :: [Int]
-l2 = undefined -- make a list of numbers
+l2 = [1, 2, 3, 4] -- make a list of numbers
 
 {-
 Lists can contain structured data...
@@ -930,7 +955,7 @@ l3 = [(1, True), (2, False)]
 -}
 
 l4 :: [[Int]]
-l4 = undefined -- make a list of lists
+l4 = [[1, 2], [2, 3]] -- make a list of lists
 
 {-
 List elements *must* have the same type.
@@ -960,6 +985,7 @@ What is the value of l7?
 -}
 
 -- >>> l7
+-- "hello 5520!"
 --
 
 {-
@@ -989,8 +1015,10 @@ Try evaluating `c1` and `c2`.
 -}
 
 -- >>> c1
+-- [True,False,False]
 --
 -- >>> c2
+-- [1]
 --
 
 {-
@@ -1023,8 +1051,10 @@ Try evaluating `s1` and `s2`.
 -}
 
 -- >>> s1
+-- "abc"
 --
 -- >>> s2
+-- "abc"
 --
 
 {-
@@ -1141,7 +1171,7 @@ range :: Int -> Int -> [Int]
 \**Step 3**: Define the function. This part is for you to do for your quiz.
 -}
 
-range i j = undefined
+range i j = if i > j then [] else i : range (i+1) j
 
 {-
 \**Step 4**: Run the tests.
@@ -1189,7 +1219,10 @@ lists that have three or more elements.
 -}
 
 isLong :: [a] -> Bool
-isLong = undefined
+isLong [] = False
+isLong [_] = False
+isLong [_, _] = False
+isLong _ = True
 
 testIsLong :: Test
 testIsLong =
@@ -1200,6 +1233,8 @@ testIsLong =
       isLong "abc" ~? "three"
     ]
 
+runLongTests :: IO Counts
+runLongTests = runTestTT testIsLong
 {-
 Finally, all of the patterns we have shown you so far have been part of definitions. We can define a function, like `isSingleton` or `isGreeting` above, by cases, using multiple lines. This style is common in Haskell, but if you are coming from OCaml, you might be more familiar with `match`, or a separate expression form of pattern matching. Such a form is also available in Haskell, using the `case` and `of` keywords.
 
@@ -1349,7 +1384,8 @@ listIncr :: [Int] -> [Int]
 \**Step 3**: Define the function.
 -}
 
-listIncr = undefined
+listIncr [] = []
+listIncr (x : xs) = (x + 1) : listIncr xs
 
 {-
 \**Step 4**: Run the tests.
@@ -1384,7 +1420,9 @@ listAdd :: [Int] -> [Int] -> [Int]
 \**Step 3**: Define the function.
 -}
 
-listAdd = undefined
+listAdd [] _ = []
+listAdd _ [] = []
+listAdd (x1 : xs1) (x2 : xs2) = (x1 + x2) : listAdd xs1 xs2
 
 {-
 \**Step 4**: Run the tests.
@@ -1426,6 +1464,7 @@ But, we can work with any finite prefix of the list without trouble.
 -}
 
 -- >>> take 17 ones
+-- [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 
 {-
 And, we can use this technique to define many different series of
@@ -1436,6 +1475,7 @@ allNums :: [Int]
 allNums = 1 : listIncr allNums
 
 -- >>> take 17 allNums
+-- [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]
 
 {-
 And we can define the Fibonacci series. (The `tail` function below
